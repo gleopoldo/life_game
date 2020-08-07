@@ -19,13 +19,37 @@ defmodule LifeGame do
   """
 
   alias LifeGame.Cell
+  alias LifeGame.Matrix
+
+  def sample_matrix do
+    [
+      ["-","-","-","-","-","-","-","-","-","-","-","-","-","-"],
+      ["-","-","-","-","-","-","-","-","-","-","-","-","-","-"],
+      ["-","-","-","-","-","-","-","-","-","-","-","-","-","-"],
+      ["-","-","-","-","@","-","@","-","@","-","-","-","-","-"],
+      ["-","-","-","-","-","@","-","@","-","@","-","-","-","-"],
+      ["-","-","-","-","@","-","@","-","@","-","-","-","-","-"],
+      ["-","-","-","-","-","-","-","-","-","-","-","-","-","-"],
+      ["-","-","-","-","-","-","-","-","-","-","-","-","-","-"],
+      ["-","-","-","-","-","-","-","-","-","-","-","-","-","-"],
+      ["-","-","-","-","-","-","-","-","-","-","-","-","-","-"],
+      ["-","-","-","-","-","-","-","-","-","-","-","-","-","-"],
+    ]
+  end
+
+  def iterate(matrix, 0) do
+    IO.write(matrix)
+    matrix
+  end
+
+  def iterate(matrix, count) do
+    new_matrix = next_frame(matrix)
+    Process.sleep(1000)
+    IO.inspect(new_matrix)
+    iterate(new_matrix, count - 1)
+  end
 
   def next_frame(matrix) do
-    matrix
-    |> Cell.map(fn _, coord -> Cell.next_status(matrix, coord) end)
-    |> Cell.map(fn
-         :dead, _ -> 0
-         :alive,_ -> 1
-       end)
+    Matrix.map(matrix, fn _, coord -> Cell.next_status(matrix, coord) end)
   end
 end
