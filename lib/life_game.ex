@@ -20,6 +20,7 @@ defmodule LifeGame do
 
   alias LifeGame.Cell
   alias LifeGame.Matrix
+  alias LifeGame.Server
 
   def sample_matrix do
     [
@@ -37,16 +38,8 @@ defmodule LifeGame do
     ]
   end
 
-  def iterate(matrix, 0) do
-    IO.write(matrix)
-    matrix
-  end
-
-  def iterate(matrix, count) do
-    new_matrix = next_frame(matrix)
-    Process.sleep(1000)
-    IO.inspect(new_matrix)
-    iterate(new_matrix, count - 1)
+  def start_server() do
+    Server.start_link(sample_matrix())
   end
 
   def next_frame(matrix) do
