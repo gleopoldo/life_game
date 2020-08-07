@@ -11,6 +11,32 @@ defmodule LifeGame.CellTest do
     [0, 1, 0]
   ]
 
+  describe "map/2" do
+    test "returns the original matrix" do
+      assert @matrix == Cell.map(@matrix)
+    end
+
+    test "runs the given callback to all points" do
+      response = [[0,0,0],[0,0,0],[0,0,0],[0,0,0]]
+
+      assert ^response = Cell.map(@matrix, fn _, _ -> 0 end)
+    end
+
+    test "passes the correct point coordinates" do
+      response = [
+        [{{0,0},1}, {{1,0},0}, {{2,0},1}],
+        [{{0,1},1}, {{1,1},1}, {{2,1},1}],
+        [{{0,2},0}, {{1,2},0}, {{2,2},0}],
+        [{{0,3},0}, {{1,3},1}, {{2,3},0}]
+      ]
+
+      assert ^response = Cell.map(
+        @matrix,
+        fn value, coord -> {coord, value} end
+      )
+    end
+  end
+
   describe "value_at/2" do
     test "returns the correct value at (0,0)" do
       assert 1 == Cell.value_at(@matrix, {0,0})

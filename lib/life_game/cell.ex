@@ -1,4 +1,14 @@
 defmodule LifeGame.Cell do
+  def map(matrix, callback \\ fn el,{_,_} -> el end) do
+    matrix
+    |> Enum.with_index()
+    |> Enum.map(fn {list, row} ->
+      list
+      |> Enum.with_index()
+      |> Enum.map(fn {value, col} -> callback.(value, {col, row}) end)
+    end)
+  end
+
   def neighboors(matrix, {x,y}) do
     if within_bounds?(matrix, {x,y}) do
       fetch_neighboors(matrix, {x,y})
@@ -53,12 +63,15 @@ defmodule LifeGame.Cell do
 
 #   Como representar a área do Jogo de uma maneira fácil de testar;
 #   Que 'valor' as células fora da área do Jogo terão. Ou o Jogo não terá limite de área?
+  def total_alive_near(matrix, {x,y}) do
+    matrix
+    |> neighboors({x,y})
+    |> Enum.filter(fn coord -> alive?(matrix, coord) end)
+    |> Enum.count()
+  end
+
   def next_status(matrix, {x, y}) do
-    total_neighboors =
-      matrix
-      |> neighboors({x,y})
-      |> Enum.filter(fn coord -> alive?(matrix, coord) end)
-      |> Enum.count()
+    total_neighboors = total_alive_near(matrix, {x,y})
 
     case {alive?(matrix, {x,y}), total_neighboors} do
       {true, total} when total < 2   -> :dead

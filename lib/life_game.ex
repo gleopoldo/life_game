@@ -18,21 +18,14 @@ defmodule LifeGame do
     Que 'valor' as células fora da área do Jogo terão. Ou o Jogo não terá limite de área?
   """
 
+  alias LifeGame.Cell
+
   def next_frame(matrix) do
-    each_in_matrix(matrix, fn _ -> 0 end)
-  end
-
-  defp each_in_matrix(matrix, callback \\ fn {_,_,el} -> el end) do
     matrix
-    |> Enum.with_index()
-    |> Enum.map(fn {list, row} ->
-      list
-      |> Enum.with_index()
-      |> Enum.map(fn {value, col} -> callback.({row, col, value}) end)
-    end)
-  end
-
-  defp build_coordinates(matrix) do
-    each_in_matrix(matrix, fn {row, col, value} -> {row, col, value} end)
+    |> Cell.map(fn _, coord -> Cell.next_status(matrix, coord) end)
+    |> Cell.map(fn
+         :dead, _ -> 0
+         :alive,_ -> 1
+       end)
   end
 end
